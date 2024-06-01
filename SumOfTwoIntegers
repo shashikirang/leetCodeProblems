@@ -1,0 +1,59 @@
+Given two integers a and b, return the sum of the two integers without using the operators + and -.
+
+Example 1:
+
+Input: a = 1, b = 2
+Output: 3
+Example 2:
+
+Input: a = 2, b = 3
+Output: 5
+ 
+
+Constraints:
+
+-1000 <= a, b <= 1000
+class Solution {
+public:
+    int getSum(int a, int b) {
+ /*       int i = 0;
+        int res = a;
+        while (i!=b) {
+            if (i == 0 && a == 0) {
+                res= b;
+                break;
+            }
+            else if (a>0 && b>0) {
+                 res++;
+                 i++;
+            }
+            else if (a<0 && b<0) {
+                res--;
+                i--;
+            }
+            else if (a<0 && b>0) {
+                res++;
+                i++;
+            }
+            else if (a>0 && b<0) {
+                res--;
+                i--;
+            }
+        }
+        return res;
+
+*/
+    int carry = 0;
+    while (b!=0) {
+     //get the carry , where set bits are obtained 
+    carry = a&b;
+
+    //XOR of a and b gives the sum without carry 
+    a = a^ b;   
+
+    b = carry << 1;
+
+    }
+    return a;
+    }
+};
