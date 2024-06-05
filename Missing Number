@@ -51,3 +51,26 @@ public:
 
     }
 };
+
+
+// One more solution with XOR 
+#include <vector>
+
+class Solution {
+public:
+    int missingNumber(std::vector<int>& nums) {
+        int n = nums.size();
+        int xor_all = 0;
+        int xor_array = 0;
+
+        for (int i = 0; i <= n; ++i) {
+            xor_all ^= i;
+        }
+
+        for (int num : nums) {
+            xor_array ^= num;
+        }
+
+        return xor_all ^ xor_array;
+    }
+};
