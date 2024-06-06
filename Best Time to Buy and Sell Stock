@@ -24,7 +24,7 @@ Constraints:
 1 <= prices.length <= 105
 0 <= prices[i] <= 104
 
-
+//O (n2)
 class Solution {
 public:
     int maxi(int a, int b) {
@@ -46,3 +46,23 @@ public:
         return max;
     }
 };
+
+//O(n)
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+    if (prices.empty()) return 0;
+       int min_price = prices[0];
+       int max = 0; 
+        for (int price : prices) {
+            if ( price<min_price) {
+                min_price = price;
+            } else{
+                max = std::max(max, (price - min_price));
+            }
+        }
+
+        return max;
+    }
+};
+
