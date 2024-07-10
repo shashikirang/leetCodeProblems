@@ -1,0 +1,133 @@
+Given two strings s and t of lengths m and n respectively, return the minimum window 
+substring
+ of s such that every character in t (including duplicates) is included in the window. If there is no such substring, return the empty string "".
+
+The testcases will be generated such that the answer is unique.
+
+ 
+
+Example 1:
+
+Input: s = "ADOBECODEBANC", t = "ABC"
+Output: "BANC"
+Explanation: The minimum window substring "BANC" includes 'A', 'B', and 'C' from string t.
+Example 2:
+
+Input: s = "a", t = "a"
+Output: "a"
+Explanation: The entire string s is the minimum window.
+Example 3:
+
+Input: s = "a", t = "aa"
+Output: ""
+Explanation: Both 'a's from t must be included in the window.
+Since the largest window of s only has one 'a', return empty string.
+=================================================================C++ solution
+ string minWindow(string s, string t) {
+            if (s.empty() || t.empty()) return "";
+
+    std::unordered_map<char, int> tMap;
+    for (char c : t) {
+        tMap[c]++;
+    }
+
+    int left = 0, right = 0;
+    int minLeft = 0, minLen = INT_MAX;
+    int counter = t.size();
+
+    while (right < s.size()) {
+        if (tMap.find(s[right]) != tMap.end()) {
+            if (tMap[s[right]] > 0) {
+                counter--;
+            }
+            tMap[s[right]]--;
+        }
+        right++;
+
+        while (counter == 0) {
+            cout << "right : " << right << " left " << left << " minlen " << minLen << endl;
+            if (right - left < minLen) {
+                minLeft = left;
+                minLen = right - left;
+            }
+
+            if (tMap.find(s[left]) != tMap.end()) {
+                tMap[s[left]]++;
+                if (tMap[s[left]] > 0) {
+                    counter++;
+                }
+            }
+            left++;
+        }
+    }
+
+    cout << "minlength " << minLen <<  " minleft " << minLeft <<  endl;
+    return minLen == INT_MAX ? "" : s.substr(minLeft, minLen);
+        
+    }
+
+
+
+
+============================================================GOLang solution
+package main
+
+import (
+	"fmt"
+	"strings"
+)
+
+func minWindow(s string, t string) string {
+	if len(s) == 0 || len(t) == 0 {
+		return ""
+	}
+
+	tMap := make(map[byte]int)
+	for i := 0; i < len(t); i++ {
+		tMap[t[i]]++
+	}
+
+	left, right := 0, 0
+	minLeft, minLen := 0, len(s)+1
+	counter := len(t)
+
+	for right < len(s) {
+		c := s[right]
+		if count, ok := tMap[c]; ok {
+			if count > 0 {
+				counter--
+			}
+			tMap[c]--
+		}
+		right++
+
+		for counter == 0 {
+			if right-left < minLen {
+				minLeft = left
+				minLen = right - left
+			}
+
+			c := s[left]
+			if count, ok := tMap[c]; ok {
+				tMap[c]++
+				if count == 0 {
+					counter++
+				}
+			}
+			left++
+		}
+	}
+
+	if minLen > len(s) {
+		return ""
+	}
+	return s[minLeft : minLeft+minLen]
+}
+
+func main() {
+	s := "ADOBECODEBANC"
+	t := "ABC"
+
+	result := minWindow(s, t)
+	fmt.Printf("The minimum window substring is: %s\n", result)
+}
