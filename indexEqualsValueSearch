@@ -1,0 +1,32 @@
+// Given a sorted array arr of distinct integers, write a function indexEqualsValueSearch that returns the lowest index i for which arr[i] == i. Return -1 if there is no such index. 
+ 
+
+#include <iostream>
+#include <vector>
+
+int indexEqualsValueSearch(const std::vector<int>& arr) {
+    int low = 0;
+    int high = arr.size() - 1;
+    int result = -1;
+
+    while (low <= high) {
+        int mid = low + (high - low) / 2;
+        if (arr[mid] == mid) {
+            result = mid; // Found a match, continue to search on the left side
+            high = mid - 1;
+        } else if (arr[mid] < mid) {
+            low = mid + 1; // Search in the right half
+        } else {
+            high = mid - 1; // Search in the left half
+        }
+    }
+
+    return result;
+}
+
+int main() {
+    std::vector<int> arr = {-10, -5, 0, 3, 7, 9, 12, 13};
+    int result = indexEqualsValueSearch(arr);
+    std::cout << "The lowest index i for which arr[i] == i is: " << result << std::endl;
+    return 0;
+}
