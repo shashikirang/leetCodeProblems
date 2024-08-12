@@ -38,3 +38,8 @@ public:
         return duplicate;
     }
 };
+
+Hash Set:
+
+We use an unordered_set to keep track of the numbers we have already seen. A set is an ideal choice here because it allows for average 
+O(1) time complexity for both insertions and lookups.
