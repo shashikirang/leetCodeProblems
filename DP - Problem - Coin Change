@@ -67,6 +67,31 @@ public:
     }
 };
 
+=======================================================================
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+class Solution {
+public:
+    int coinChange(vector<int>& coins, int amount) {
+        // Initialize the dp array with a value greater than any possible number of coins
+        vector<int> dp(amount + 1, amount + 1);
+        dp[0] = 0;  // Base case
+        
+        // Compute the minimum number of coins for each amount from 1 to amount
+        for (int i = 1; i <= amount; ++i) {
+            for (int coin : coins) {
+                if (i - coin >= 0) {
+                    dp[i] = min(dp[i], dp[i - coin] + 1);
+                }
+            }
+        }
+        
+        // If dp[amount] is still amount + 1, it means no solution was found
+        return dp[amount] > amount ? -1 : dp[amount];
+    }
+};
 
 
 Time complexity : 
