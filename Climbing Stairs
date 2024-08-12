@@ -20,6 +20,22 @@ Explanation: There are three ways to climb to the top.
 2. 1 step + 2 steps
 3. 2 steps + 1 step
 
+To solve this problem, you can notice that to reach step n, you can either:
+
+Come from step n-1 by taking 1 step, or
+Come from step n-2 by taking 2 steps.
+This means that the number of ways to reach step n is the sum of the number of ways to reach step n-1 and the number of ways to reach step n-2.
+
+This gives us the recurrence relation:
+ways(𝑛)=ways(𝑛−1)+ways(𝑛−2)
+ways(n)=ways(n−1)+ways(n−2)
+
+This is similar to the Fibonacci sequence, where:
+
+ways(1) = 1 (only one way to take one step)
+ways(2) = 2 (two ways: [1 step + 1 step] or [2 steps])
+
+
 #include <bits/stdc++.h>
 using namespace std;
 int main()
