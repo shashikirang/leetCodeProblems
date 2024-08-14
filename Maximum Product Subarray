@@ -64,4 +64,16 @@ int main() {
     return 0;
 }
 
+Time Complexity: 
+𝑂
+(
+𝑛
+)
+O(n) – Each element is processed once.
 
+Space Complexity: 
+𝑂
+(
+1
+)
+O(1) – Constant space for variables.
