@@ -24,40 +24,44 @@ Constraints:
 -10 <= nums[i] <= 10
 The product of any prefix or suffix of nums is guaranteed to fit in a 32-bit integer.
 
-
+#include <vector>
+#include <algorithm>
+#include <iostream>
+using namespace std;
 
 class Solution {
 public:
     int maxProduct(vector<int>& nums) {
-        int64_t maxProduct = 0;
-        int64_t leftprod = 1;
-        int64_t rightprod = 1;
-        int n = nums.size();
-        for (int i =0; i<n; i++) {
-            leftprod = leftprod == 0 ? 1 : leftprod;
-            rightprod = rightprod == 0 ? 1 : rightprod;
+        if (nums.empty()) return 0;
 
-            leftprod *= nums[i];
+        int64_t maxProduct = nums[0];
+        int64_t minProduct = nums[0];
+        int64_t globalMaxProduct = nums[0];
 
-            rightprod *= nums[n - 1 - i];
-            maxProduct = max(maxProduct, max(leftprod, rightprod));
+        for (size_t i = 1; i < nums.size(); ++i) {
+            if (nums[i] < 0) {
+                // Swap maxProduct and minProduct when the current number is negative
+                swap(maxProduct, minProduct);
+            }
+
+            // Update maxProduct and minProduct
+            maxProduct = max(static_cast<int64_t>(nums[i]), nums[i] * maxProduct);
+            minProduct = min(static_cast<int64_t>(nums[i]), nums[i] * minProduct);
+
+            // Update global maximum product
+            globalMaxProduct = max(globalMaxProduct, maxProduct);
         }
 
-        if (n==1)
-            maxProduct = nums[0];
-
-        return maxProduct;
-
+        return globalMaxProduct;
     }
 };
 
-
-
-Below function should help in putting a restriction to limits 
-bool willMultiplyOverflow(int a, int b) {
-    if (a > 0 && b > 0 && a > (std::numeric_limits<int>::max() / b)) return true;
-    if (a > 0 && b < 0 && b < (std::numeric_limits<int>::min() / a)) return true;
-    if (a < 0 && b > 0 && a < (std::numeric_limits<int>::min() / b)) return true;
-    if (a < 0 && b < 0 && a < (std::numeric_limits<int>::max() / b)) return true;
-    return false;
+// Example usage
+int main() {
+    Solution sol;
+    vector<int> nums = {2, 3, -2, 4, -1}; // Example input
+    cout << "Maximum product of a subarray: " << sol.maxProduct(nums) << endl;
+    return 0;
 }
+
+
