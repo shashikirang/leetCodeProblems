@@ -56,3 +56,16 @@ public:
         return count;
     }
 };
+
+
+
+
+//Optimized solution if the functions is called multiple times 
+int hammingWeight(int n) {
+    int count = 0;
+    while (n) {
+        n &= (n - 1); // removes the lowest set bit
+        count++;
+    }
+    return count;
+}
