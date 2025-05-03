@@ -1,0 +1,59 @@
+Given a string s and an integer k, determine whether s is a k-palindrome, i.e., can be converted into a palindrome by removing at most k characters.
+
+
+Input: s = "abcdeca", k = 2
+Output: true
+Explanation: Remove 'b' and 'e' to get "acdca" (a palindrome)
+
+#include <iostream>
+#include <vector>
+#include <string>
+#include <unordered_map>
+using namespace std;
+
+class Solution {
+    unordered_map<string, bool> memo;
+
+    bool isKPalindromeHelper(const string& s, int i, int j, int k) {
+        // Base case: if i >= j, it's already a palindrome
+        if (i >= j) return true;
+
+        string key = to_string(i) + "," + to_string(j) + "," + to_string(k);
+        if (memo.count(key)) return memo[key];
+
+        if (s[i] == s[j]) {
+            // Characters match, check inner substring
+            memo[key] = isKPalindromeHelper(s, i + 1, j - 1, k);
+        } else {
+            if (k == 0) {
+                // No deletions left, and characters don't match
+                memo[key] = false;
+            } else {
+                // Try removing one character from either end
+                bool removeLeft = isKPalindromeHelper(s, i + 1, j, k - 1);
+                bool removeRight = isKPalindromeHelper(s, i, j - 1, k - 1);
+                memo[key] = removeLeft || removeRight;
+            }
+        }
+        return memo[key];
+    }
+
+public:
+    bool isKPalindrome(string s, int k) {
+        memo.clear();
+        return isKPalindromeHelper(s, 0, s.length() - 1, k);
+    }
+};
+
+int main() {
+    Solution sol;
+    string s = "abcdeca";
+    int k = 2;
+
+    if (sol.isKPalindrome(s, k))
+        cout << "Yes, it is a k-palindrome" << endl;
+    else
+        cout << "No, it is not a k-palindrome" << endl;
+
+    return 0;
+}
