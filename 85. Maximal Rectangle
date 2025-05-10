@@ -1,0 +1,50 @@
+Given a 2D binary matrix filled with '0's and '1's, find the largest rectangle containing only '1's and return its area
+For each row in the matrix, treat it as the base of a histogram.
+Convert the matrix row-by-row into a "histogram" of heights.
+For each row/histogram, use the largest rectangle in histogram approach to compute the max area.
+
+class Solution {
+public:
+    int maximalRectangle(vector<vector<char>>& matrix) {
+        if (matrix.empty() || matrix[0].empty()) return 0;
+        int maxArea = 0;
+        int m = matrix.size(), n = matrix[0].size();
+
+        vector<int> heights(n, 0);
+
+        for (int i = 0; i < m; ++i) {
+            // Build up histogram row by row
+            for (int j = 0; j < n; ++j) {
+                heights[j] = (matrix[i][j] == '1') ? heights[j] + 1 : 0;
+            }
+            maxArea = max(maxArea, largestRectangleArea(heights));
+        }
+        return maxArea;
+    }
+
+    int largestRectangleArea(vector<int>& heights) {
+        heights.push_back(0); // Sentinel
+        stack<int> s;
+        int maxArea = 0;
+
+        for (int i = 0; i < heights.size(); ++i) {
+            while (!s.empty() && heights[i] < heights[s.top()]) {
+                int h = heights[s.top()];
+                s.pop();
+                int width = s.empty() ? i : (i - s.top() - 1);
+                maxArea = max(maxArea, h * width);
+            }
+            s.push(i);
+        }
+        heights.pop_back();
+        return maxArea;
+    }
+};
+
+Time: O(m × n), where m is number of rows and n is number of columns.
+
+For each row, building histogram is O(n)
+
+Largest rectangle in histogram is O(n)
+
+Space: O(n) for histogram + stack
