@@ -47,3 +47,42 @@ public:
         return image;
     }
 };
+
+
+
+
+class Solution {
+public:
+    vector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc, int newColor) {
+        int originalColor = image[sr][sc];
+        if (originalColor == newColor) return image;
+
+        int rows = image.size();
+        int cols = image[0].size();
+
+        queue<pair<int, int>> q;
+        q.push({sr, sc});
+        image[sr][sc] = newColor;
+
+        vector<pair<int, int>> directions = {{0,1}, {1,0}, {0,-1}, {-1,0}}; // right, down, left, up
+
+        while (!q.empty()) {
+            auto [r, c] = q.front();
+            q.pop();
+
+            for (auto [dr, dc] : directions) {
+                int nr = r + dr;
+                int nc = c + dc;
+
+                // Check bounds and original color
+                if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && image[nr][nc] == originalColor) {
+                    image[nr][nc] = newColor;
+                    q.push({nr, nc});
+                }
+            }
+        }
+
+        return image;
+    }
+};
+
