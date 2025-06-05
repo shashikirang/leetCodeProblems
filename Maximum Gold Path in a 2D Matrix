@@ -1,0 +1,57 @@
+Given a 2D matrix representing a grid of cells, each containing a non-negative integer representing the amount of gold in that cell, find the maximum amount of gold that can be collected while moving from the starting cell at {1,1} to the destination cell at {n,m}.
+
+You can only move either downwards or rightwards in each step.
+
+Expected time complexity: O(N^2), where N represents the size of the grid.Input:
+Grid:
+[
+  [1, 3, 1],
+  [2, 2, 4],
+  [5, 0, 2]
+]
+
+Output:
+Maximum Gold Collected: 12
+
+Explanation:
+In this example, the grid represents a 3x3 matrix where each cell contains the amount of gold in that cell. Starting from the top-left cell at {1,1} and moving towards the bottom-right cell at {3,3}, the maximum amount of gold that can be collected is 12. One possible path to collect the maximum gold is: (1,1) -> (1,2) -> (1,3) -> (2,3) -> (3,3). The total gold collected in this path is 1 + 3 + 4 + 2 + 2 = 12.
+
+
+DFS with memoization
+======================= 
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+int dfs(int i, int j, const vector<vector<int>>& grid, vector<vector<int>>& memo) {
+    int n = grid.size();
+    int m = grid[0].size();
+
+    if (i >= n || j >= m) return 0;  // Out of bounds
+
+    if (memo[i][j] != -1) return memo[i][j];
+
+    int right = dfs(i, j + 1, grid, memo);
+    int down  = dfs(i + 1, j, grid, memo);
+
+    memo[i][j] = grid[i][j] + max(right, down);
+    return memo[i][j];
+}
+
+int maxGoldDFS(const vector<vector<int>>& grid) {
+    int n = grid.size(), m = grid[0].size();
+    vector<vector<int>> memo(n, vector<int>(m, -1));
+    return dfs(0, 0, grid, memo);
+}
+
+int main() {
+    vector<vector<int>> grid = {
+        {1, 3, 1},
+        {1, 5, 1},
+        {4, 2, 1}
+    };
+    cout << "Max gold collected: " << maxGoldDFS(grid) << endl;
+    return 0;
+}
