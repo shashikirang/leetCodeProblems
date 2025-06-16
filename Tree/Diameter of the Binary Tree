@@ -1,0 +1,120 @@
+Given the root of a binary tree, return the length of the diameter of the tree.
+
+The diameter of a binary tree is the length of the longest path between any two nodes in a tree. This path may or may not pass through the root.
+
+The length of a path between two nodes is represented by the number of edges between them.
+
+ 
+
+Example 1:
+
+
+Input: root = [1,2,3,4,5]
+Output: 3
+Explanation: 3 is the length of the path [4,2,1,3] or [5,2,1,3].
+Example 2:
+
+Input: root = [1,2]
+Output: 1
+
+
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+struct TreeNode {
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+};
+
+class Solution {
+    int maxDiameter = 0;
+
+    int height(TreeNode* node) {
+        if (!node) return 0;
+
+        int leftHeight = height(node->left);
+        int rightHeight = height(node->right);
+
+        // Update diameter at this node
+        maxDiameter = max(maxDiameter, leftHeight + rightHeight);
+
+        return 1 + max(leftHeight, rightHeight);
+    }
+
+public:
+    int diameterOfBinaryTree(TreeNode* root) {
+        height(root);
+        return maxDiameter;
+    }
+};
+
+
+Time Complexity: O(N) = > Every node in the tree is visited once 
+Space Complexity: O(H) = > DUe to recursion call stack using during depth first traversal 
+                            In the worst case (skewed tree), the height can be N, so space is O(N).
+                            In the best case (balanced tree), height is log N, so space is O(log N).
+
+
+=======================================================================================================================
+Post-order traversal (Left → Right → Node) is naturally recursive, but we can simulate it using a stack.
+
+#include <iostream>
+#include <unordered_map>
+#include <stack>
+#include <algorithm>
+using namespace std;
+
+// Definition for a binary tree node
+struct TreeNode {
+    int value;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode(int x) : value(x), left(NULL), right(NULL) {}
+};
+
+class Solution {
+public:
+    int diameterOfBinaryTree(TreeNode* root) {
+        unordered_map<TreeNode*, int> map;  // HashMap to store depth of nodes
+        stack<TreeNode*> stack;  // Stack to simulate post-order traversal
+        int diameter = 0;
+
+        // If the root is not null, push it to the stack
+        if (root != NULL) {
+            stack.push(root);
+        }
+
+        // Simulate post-order traversal using the stack
+        while (!stack.empty()) {
+            TreeNode* node = stack.top();
+
+            // Traverse the left child if it exists and is not processed
+            if (node->left != NULL && map.find(node->left) == map.end()) {
+                stack.push(node->left);
+            } 
+            // Traverse the right child if it exists and is not processed
+            else if (node->right != NULL && map.find(node->right) == map.end()) {
+                stack.push(node->right);
+            } 
+            else {
+                // Process the node when both children are processed
+                stack.pop();
+                
+                // Get the depth of left and right subtrees (if they exist)
+                int leftDepth = map.count(node->left) ? map[node->left] : 0;
+                int rightDepth = map.count(node->right) ? map[node->right] : 0;
+
+                // Update the depth of the current node (1 + max of left and right depths)
+                map[node] = 1 + max(leftDepth, rightDepth);
+
+                // Update the diameter (max of previous diameter and sum of left and right depths)
+                diameter = max(diameter, leftDepth + rightDepth);
+            }
+        }
+        return diameter;
+    }
+};
+
