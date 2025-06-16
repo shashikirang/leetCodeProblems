@@ -1,0 +1,273 @@
+Given the root of a binary search tree, and an integer k, return the kth smallest value (1-indexed) of all the values of the nodes in the tree.
+
+ 
+
+Example 1:
+
+
+Input: root = [3,1,4,null,2], k = 1
+Output: 1
+Example 2:
+
+
+Input: root = [5,3,6,2,4,null,null,1], k = 3
+Output: 3
+
+
+#include <iostream>
+using namespace std;
+
+struct TreeNode {
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+};
+
+class Solution {
+private:
+    int count = 0;
+    int result = -1;
+
+    void inOrder(TreeNode* root, int k) {
+        if (!root || count >= k) return;
+
+        inOrder(root->left, k);
+
+        count++;
+        if (count == k) {
+            result = root->val;
+            return;
+        }
+
+        inOrder(root->right, k);
+    }
+
+public:
+    int kthSmallest(TreeNode* root, int k) {
+        count = 0;
+        result = -1;
+        inOrder(root, k);
+        return result;
+    }
+};
+
+Time complexity: O(log(k))
+Space complexity: O(h)
+
+
+
+Iterative approach using stack 
+
+/**
+ * Definition for a binary tree node.
+ */
+struct TreeNode {
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+
+    TreeNode() : val(0), left(nullptr), right(nullptr) {}
+
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+
+    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+};
+
+class Solution {
+public:
+    /**
+     * Returns the k-th smallest element in a BST.
+     * This is achieved by performing an in-order traversal iteratively.
+     * In-order traversal of a BST yields the nodes in increasing order.
+     * 
+     * @param root A pointer to the root node of the BST.
+     * @param k The index (1-indexed) of the smallest element to be found.
+     * @return The value of the k-th smallest node.
+     */
+    int kthSmallest(TreeNode* root, int k) {
+        // Initialize an empty stack that will be used to perform the in-order traversal.
+        stack<TreeNode*> stk;
+
+        // Continue traversing the tree until we have visited all nodes.
+        while (root || !stk.empty()) {
+            // Go left as long as there is a left child.
+            if (root) {
+                stk.push(root);      // Push the current node onto the stack before moving to left child.
+                root = root->left;   // Move left.
+            } else {
+                // Process the nodes that do not have a left child anymore.
+                root = stk.top();
+                stk.pop();   // Remove the node from the stack.
+                if (--k == 0) {
+                    // If we have reached the k-th smallest, return its value.
+                    return root->val;
+                }
+                // Move to the right child, which will be processed after all its left children.
+                root = root->right;
+            }
+        }
+        // If we are here, it means the k-th smallest element could not be found, return 0.
+        // Although in valid BSTs with at least k nodes, the function will never reach here.
+        return 0;
+    }
+};
+
+
+
+
+
+=================================================================================================
+                                
+#include <iostream>
+#include <vector>
+#include <climits> 
+using namespace std;
+
+// Definition of TreeNode structure
+// for a binary tree node
+struct TreeNode {
+    // Value of the node
+    int val;
+    
+    // Pointer to the left child node
+    TreeNode* left;
+    
+    // Pointer to the right child node
+    TreeNode* right;
+
+    // Constructor to initialize the node with a
+    // value and set left and right pointers to null
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+};
+
+class Solution {
+private:
+    // Helper function to perform reverse inorder
+    // traversal to find Kth largest element
+    void reverseInorder(TreeNode* node, int& counter, int k, int& kLargest) {
+        if (!node || counter >= k) return;
+
+        // Traverse right subtree
+        reverseInorder(node->right, counter, k, kLargest);
+
+        // Increment counter after
+        // visiting right subtree
+        counter++;
+
+        // Check if current node
+        // is the Kth largest
+        if (counter == k) {
+            kLargest = node->val;
+            return;
+        }
+
+        // Traverse left subtree if
+        // Kth largest is not found yet
+        reverseInorder(node->left, counter, k, kLargest);
+    }
+
+    // Helper function to perform inorder
+    // traversal to find Kth smallest element
+    void inorder(TreeNode* node, int& counter, int k, int& kSmallest) {
+        if (!node || counter >= k) return;
+
+        // Traverse left subtree
+        inorder(node->left, counter, k, kSmallest);
+
+        // Increment counter after visiting left subtree
+        counter++;
+
+        // Check if current node is the Kth smallest
+        if (counter == k) {
+            kSmallest = node->val;
+            return;
+        }
+
+        // Traverse right subtree if
+        // Kth smallest is not found yet
+        inorder(node->right, counter, k, kSmallest);
+    }
+
+public:
+    pair<int, int> findKth(TreeNode* root, int k) {
+        int kSmallest = INT_MIN, kLargest = INT_MIN;
+        // Counter to track visited nodes
+        int counter = 0; 
+
+        // Find Kth smallest element
+        // (perform inorder traversal)
+        inorder(root, counter, k, kSmallest);
+        
+        // Reset counter for Kth largest element
+        counter = 0; 
+        // Find Kth largest element
+        // (perform reverse inorder traversal)
+        reverseInorder(root, counter, k, kLargest);
+
+        return make_pair(kSmallest, kLargest);
+    }
+};
+
+
+
+
+
+// Function to perform an in-order traversal
+// of a binary tree and print its nodes
+void printInOrder(TreeNode* root) {
+    // Check if the current node
+    // is null (base case for recursion)
+    if (root == nullptr) {
+        // If null, return and
+        // terminate the function
+        return;
+    }
+
+    // Recursively call printInOrder
+    // for the left subtree
+    printInOrder(root->left);
+
+    // Print the value of the current node
+    cout << root->val << " ";
+
+    // Recursively call printInOrder
+    // for the right subtree
+    printInOrder(root->right);
+}
+
+int main() {
+    // Creating a BST
+    TreeNode* root = new TreeNode(10);
+    root->left = new TreeNode(5);
+    root->right = new TreeNode(13);
+    root->left->left = new TreeNode(3);
+    root->left->left->left = new TreeNode(2);
+    root->left->left->right = new TreeNode(4);
+    root->left->right = new TreeNode(6);
+    root->left->right->right = new TreeNode(9);
+    root->right->left = new TreeNode(11);
+    root->right->right = new TreeNode(14);
+    
+    cout << "Binary Search Tree: "<< endl;
+    printInOrder(root);
+    cout << endl;
+    
+  
+    
+    Solution solution;
+
+    // Find the Kth smallest and largest elements
+    int k = 3; 
+    cout << "k: "<< k <<endl;
+    pair<int, int> kthElements = solution.findKth(root, k);
+
+    cout << "Kth smallest element: " << kthElements.first << endl;
+    cout << "Kth largest element: " << kthElements.second << endl;
+
+    return 0;
+}
+                                
+Time Complexity: O(N) where N is the number of nodes in the Binary Search Tree as we traverse in inorder and reverse inorder fashion to get to the required nodes. We visit each node once resulting in time complexity proportional to the number of nodes in the BST.
+
+Space Complexity : as no additional space is allocated or data structures used to store any values.                           
