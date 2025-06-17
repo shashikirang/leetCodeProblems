@@ -1,0 +1,62 @@
+Given an integer array nums, handle multiple queries of the following type:
+
+Calculate the sum of the elements of nums between indices left and right inclusive where left <= right.
+Implement the NumArray class:
+
+NumArray(int[] nums) Initializes the object with the integer array nums.
+int sumRange(int left, int right) Returns the sum of the elements of nums between indices left and right inclusive (i.e. nums[left] + nums[left + 1] + ... + nums[right]).
+ 
+
+Example 1:
+
+Input
+["NumArray", "sumRange", "sumRange", "sumRange"]
+[[[-2, 0, 3, -5, 2, -1]], [0, 2], [2, 5], [0, 5]]
+Output
+[null, 1, -1, -3]
+
+Explanation
+NumArray numArray = new NumArray([-2, 0, 3, -5, 2, -1]);
+numArray.sumRange(0, 2); // return (-2) + 0 + 3 = 1
+numArray.sumRange(2, 5); // return 3 + (-5) + 2 + (-1) = -1
+numArray.sumRange(0, 5); // return (-2) + 0 + 3 + (-5) + 2 + (-1) = -3
+
+
+
+#include<iostream>
+#include<vector>
+
+class NumArray {
+private:
+    // Prefix sum array to store the accumulated sum from the beginning up to each index.
+    std::vector<int> prefixSum;
+
+public:
+    // Constructor that initializes the prefix sum array using the input 'nums' array.
+    NumArray(std::vector<int>& nums) {
+        int size = nums.size();
+        prefixSum.resize(size + 1); // Resizing with an extra element to handle the zero prefix sum.
+        prefixSum[0] = 0; // Initialize the zero-th index with 0 for the prefix sum.
+      
+        // Calculate the prefix sum by adding the current element to the accumulated sum.
+        for (int i = 0; i < size; ++i) {
+            prefixSum[i + 1] = prefixSum[i] + nums[i];
+        }
+    }
+
+    // Function to calculate the sum of the elements in the range [left, right] in the 'nums' array.
+    int sumRange(int left, int right) {
+        // Return the difference between the prefix sums to get the range sum.
+        return prefixSum[right + 1] - prefixSum[left];
+    }
+};
+
+/**
+ * Usage:
+ * std::vector<int> nums = { ... };
+ * NumArray* obj = new NumArray(nums);
+ * int sum = obj->sumRange(left, right);
+ * ...
+ * delete obj; // Don't forget to deallocate the memory when done.
+ */
+
