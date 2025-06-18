@@ -1,0 +1,74 @@
+Given an integer array nums of length n and an integer target, find three integers in nums such that the sum is closest to target.
+
+Return the sum of the three integers.
+
+You may assume that each input would have exactly one solution.
+
+ 
+
+Example 1:
+
+Input: nums = [-1,2,1,-4], target = 1
+Output: 2
+Explanation: The sum that is closest to the target is 2. (-1 + 2 + 1 = 2).
+Example 2:
+
+Input: nums = [0,0,0], target = 1
+Output: 0
+Explanation: The sum that is closest to the target is 0. (0 + 0 + 0 = 0).
+ 
+
+Constraints:
+
+3 <= nums.length <= 500
+-1000 <= nums[i] <= 1000
+-104 <= target <= 104
+
+
+
+#include <vector>
+#include <algorithm>
+#include <cmath>
+
+using namespace std;
+
+class ThreeSumClosest {
+public:
+    int threeSumClosest(vector<int>& nums, int target) {
+        // Sort the elements
+        sort(nums.begin(), nums.end());
+
+        int resultSum = nums[0] + nums[1] + nums[2];
+        int minDifference = abs(resultSum - target);
+
+        // Fix the first element and find the other two elements
+        for (size_t i = 0; i < nums.size() - 2; i++) {
+            size_t left = i + 1, right = nums.size() - 1;
+
+            while (left < right) {
+                int sum = nums[i] + nums[left] + nums[right];
+
+                // If exact match, return immediately
+                if (sum == target) return target;
+
+                // Update result if closer
+                int diffToTarget = abs(sum - target);
+                if (diffToTarget < minDifference) {
+                    resultSum = sum;
+                    minDifference = diffToTarget;
+                }
+
+                // Move pointers based on sum comparison
+                if (sum < target) {
+                    left++;
+                } else {
+                    right--;
+                }
+            }
+        }
+        return resultSum;
+    }
+};
+
+Time Complexity: O(N^2)
+Space Complexity: O(1)
