@@ -1,0 +1,55 @@
+Given an array of integers nums and an integer k, return the total number of subarrays whose sum equals to k.
+
+A subarray is a contiguous non-empty sequence of elements within an array.
+
+ 
+
+Example 1:
+
+Input: nums = [1,1,1], k = 2
+Output: 2
+Example 2:
+
+Input: nums = [1,2,3], k = 3
+Output: 2
+ 
+
+Constraints:
+
+1 <= nums.length <= 2 * 104
+-1000 <= nums[i] <= 1000
+-107 <= k <= 107
+
+
+#include <vector>
+#include <unordered_map>
+using namespace std;
+
+class Solution {
+public:
+    // This function returns the number of subarrays that sum up to k.
+    int subarraySum(vector<int>& nums, int k) {
+        unordered_map<int, int> prefixSumFrequency;
+        prefixSumFrequency[0] = 1; // Base case: there's one way to have a sum of 0 (no elements).
+      
+        int answer = 0;  // Variable to store the number of subarrays that sum to k.
+        int cumulativeSum = 0; // Variable to store the cumulative sum of elements.
+      
+        // Iterate through the array to calculate the cumulative sum and count subarrays.
+        for (int num : nums) {
+            cumulativeSum += num; // Update the cumulative sum.
+            // If cumulativeSum - k exists in prefixSumFrequency, then a subarray ending at current
+            // index has a sum of k. We add the count of those occurrences to answer.
+            answer += prefixSumFrequency[cumulativeSum - k];	
+            // We then increment the count of cumulativeSum in our frequency map.
+            prefixSumFrequency[cumulativeSum]++;
+        }
+      
+        // Return the total count of subarrays that sum up to k.
+        return answer;
+    }
+};
+
+
+Time complexity: O(N)
+Space COmplexity: O(N)
