@@ -1,0 +1,24 @@
+Given an array nums, find an index i such that:
+
+nums[i] > nums[i-1] and nums[i] > nums[i+1]
+Return any peak index
+
+Assume:
+nums[-1] = -∞ and nums[n] = -∞
+So edges can also be peaks
+
+func findPeakElement(nums []int) int {
+    left, right := 0, len(nums)-1
+
+    for left < right {
+        mid := left + (right-left)/2
+
+        if nums[mid] < nums[mid+1] {
+            left = mid + 1 // go right
+        } else {
+            right = mid // go left
+        }
+    }
+
+    return left
+}
