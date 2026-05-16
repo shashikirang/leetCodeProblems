@@ -1,0 +1,39 @@
+A phrase is a palindrome if, after converting all uppercase letters into lowercase letters and removing all non-alphanumeric characters, it reads the same forward and backward. Alphanumeric characters include letters and numbers.
+
+Given a string s, return true if it is a palindrome, or false otherwise.
+
+package main
+
+import (
+	"fmt"
+	"unicode"
+)
+
+func isPalindrome(s string) bool {
+	left, right := 0, len(s)-1
+
+	for left < right {
+		// skip non-alphanumeric
+		for left < right && !unicode.IsLetter(rune(s[left])) && !unicode.IsDigit(rune(s[left])) {
+			left++
+		}
+		for left < right && !unicode.IsLetter(rune(s[right])) && !unicode.IsDigit(rune(s[right])) {
+			right--
+		}
+
+		// compare case-insensitive
+		if unicode.ToLower(rune(s[left])) != unicode.ToLower(rune(s[right])) {
+			return false
+		}
+
+		left++
+		right--
+	}
+
+	return true
+}
+
+func main() {
+	s := "A man, a plan, a canal: Panama"
+	fmt.Println(isPalindrome(s)) // true
+}
