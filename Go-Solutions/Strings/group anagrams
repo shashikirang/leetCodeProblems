@@ -1,0 +1,64 @@
+Input:  ["eat","tea","tan","ate","nat","bat"]
+Output: [["eat","tea","ate"],["tan","nat"],["bat"]]
+
+package main
+
+import (
+	"fmt"
+	"sort"
+)
+
+func groupAnagrams(strs []string) [][]string {
+	mp := make(map[string][]string)
+
+	for _, s := range strs {
+		chars := []rune(s)
+		sort.Slice(chars, func(i, j int) bool {
+			return chars[i] < chars[j]
+		})
+
+		key := string(chars)
+		mp[key] = append(mp[key], s)
+	}
+
+	result := [][]string{}
+	for _, group := range mp {
+		result = append(result, group)
+	}
+
+	return result
+}
+
+func main() {
+	strs := []string{"eat","tea","tan","ate","nat","bat"}
+	fmt.Println(groupAnagrams(strs))
+}
+
+
+Optimized to use fre map: 
+=========================================== 
+func groupAnagrams(strs []string) [][]string {
+	mp := make(map[string][]string)
+
+	for _, s := range strs {
+		freq := make([]int, 26)
+
+		for _, c := range s {
+			freq[c-'a']++
+		}
+
+		key := ""
+		for _, f := range freq {
+			key += fmt.Sprintf("%d#", f)
+		}
+
+		mp[key] = append(mp[key], s)
+	}
+
+	result := [][]string{}
+	for _, group := range mp {
+		result = append(result, group)
+	}
+
+	return result
+}
