@@ -1,0 +1,104 @@
+Given two strings s and t, return true if t is an anagram of s, and false otherwise.
+
+An Anagram is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.
+
+ 
+
+Example 1:
+
+Input: s = "anagram", t = "nagaram"
+Output: true
+Example 2:
+
+Input: s = "rat", t = "car"
+Output: false
+ 
+
+Constraints:
+
+1 <= s.length, t.length <= 5 * 104
+s and t consist of lowercase English letters.
+
+func isAnagram(s string, t string) bool {
+
+    str := []rune(s)
+    res := []rune(t)
+
+    len1 := len(s)
+    len2 := len(t)
+
+    if len1 != len2 {
+        return false
+    }
+
+    sort.Slice(str, func(i, j int) bool {
+        return str[i] < str[j]
+    })
+
+    sort.Slice(res, func(i, j int) bool {
+        return res[i] < res[j]
+    })
+
+    if string(str) == string(res) {
+        return true
+    }
+
+    return false
+}
+
+//Time Complexity 
+O(nlong) >>> sorting
+//SPace complexity 
+O(N) to store the rune string 
+
+==========================================================================
+package main
+
+import (
+    "fmt"
+)
+
+func isAnagram(s string, t string) bool {
+    // If the lengths of the strings are different, they cannot be anagrams
+    if len(s) != len(t) {
+        return false
+    }
+
+    // Create a map to count the frequency of each character in the first string
+    count := make(map[rune]int)
+    for _, char := range s {
+        count[char]++
+    }
+
+    // Subtract the frequency based on the second string
+    for _, char := range t {
+        count[char]--
+        // If the count goes below zero, it's not an anagram
+        if count[char] < 0 {
+            return false
+        }
+    }
+
+    // All counts should be zero if they are anagrams
+    for _, c := range count {
+        if c != 0 {
+            return false
+        }
+    }
+
+    return true
+}
+
+func main() {
+    s1 := "anagram"
+    t1 := "nagaram"
+    fmt.Println(isAnagram(s1, t1)) // Output: true
+
+    s2 := "rat"
+    t2 := "car"
+    fmt.Println(isAnagram(s2, t2)) // Output: false
+}
+//Time COmplexity 
+O(N)
+//SPace complexity 
+O(1)
