@@ -1,0 +1,39 @@
+Input:  "the sky is blue"
+Output: "blue is sky the"
+
+
+package main
+
+import (
+	"fmt"
+)
+
+func reverse(arr []byte, left, right int) {
+	for left < right {
+		arr[left], arr[right] = arr[right], arr[left]
+		left++
+		right--
+	}
+}
+
+func reverseWords(s []byte) {
+	n := len(s)
+
+	// Step 1: reverse entire string
+	reverse(s, 0, n-1)
+
+	start := 0
+
+	for end := 0; end <= n; end++ {
+		if end == n || s[end] == ' ' {
+			reverse(s, start, end-1)
+			start = end + 1
+		}
+	}
+}
+
+func main() {
+	s := []byte("the sky is blue")
+	reverseWords(s)
+	fmt.Println(string(s)) // "blue is sky the"
+}
