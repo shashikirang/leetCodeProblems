@@ -1,0 +1,75 @@
+type TreeNode struct {
+	Val   int
+	Left  *TreeNode
+	Right *TreeNode
+}
+
+func kthSmallest(root *TreeNode, k int) int {
+	ans := -1
+
+	var inorder func(*TreeNode)
+	inorder = func(node *TreeNode) {
+		if node == nil || ans != -1 {
+			return
+		}
+
+		inorder(node.Left)
+
+		k--
+		if k == 0 {
+			ans = node.Val
+			return
+		}
+
+		inorder(node.Right)
+	}
+inorder(root)
+return ans
+}
+
+Complexity
+Time: O(H + k) (best case), O(N) (worst case)
+Space: O(H) (recursion stack)
+where H is the tree height.
+
+------------------------- 
+Iterative approach: 
+------------------------- 
+
+type TreeNode struct {
+	Val   int
+	Left  *TreeNode
+	Right *TreeNode
+}
+
+func kthSmallest(root *TreeNode, k int) int {
+	stack := []*TreeNode{}
+	curr := root
+
+	for curr != nil || len(stack) > 0 {
+
+		// Go to the leftmost node
+		for curr != nil {
+			stack = append(stack, curr)
+			curr = curr.Left
+		}
+
+		// Pop the top node
+		curr = stack[len(stack)-1]
+		stack = stack[:len(stack)-1]
+
+		// Visit the node
+		k--
+		if k == 0 {
+			return curr.Val
+		}
+
+		// Move to right subtree
+		curr = curr.Right
+	}
+
+	return -1
+}
+
+Time: O(H + k), worst O(N)
+SPace: O(H)
