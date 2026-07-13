@@ -1,0 +1,155 @@
+Given the root of a binary tree, return the length of the diameter of the tree.
+The diameter of a binary tree is the length of the longest path between any two nodes in a tree. This path may or may not pass through the root.
+The length of a path between two nodes is represented by the number of edges between them.
+
+Input: root = [1,2,3,4,5]
+Output: 3
+Explanation: 3 is the length of the path [4,2,1,3] or [5,2,1,3].
+Example 2:
+
+Input: root = [1,2]
+Output: 1
+
+package main
+
+import "fmt"
+
+// Definition for a binary tree node.
+type TreeNode struct {
+	Val   int
+	Left  *TreeNode
+	Right *TreeNode
+}
+
+func diameterOfBinaryTree(root *TreeNode) int {
+	height := make(map[*TreeNode]int)
+	stack := []*TreeNode{}
+	diameter := 0
+
+	if root != nil {
+		stack = append(stack, root)
+	}
+
+	for len(stack) > 0 {
+		node := stack[len(stack)-1]
+
+		// Process left child first
+		if node.Left != nil {
+			if _, ok := height[node.Left]; !ok {
+				stack = append(stack, node.Left)
+				continue
+			}
+		}
+
+		// Process right child
+		if node.Right != nil {
+			if _, ok := height[node.Right]; !ok {
+				stack = append(stack, node.Right)
+				continue
+			}
+		}
+
+		// Both children are already processed
+		stack = stack[:len(stack)-1]
+
+		leftDepth := 0
+		if node.Left != nil {
+			leftDepth = height[node.Left]
+		}
+
+		rightDepth := 0
+		if node.Right != nil {
+			rightDepth = height[node.Right]
+		}
+
+		if leftDepth > rightDepth {
+			height[node] = leftDepth + 1
+		} else {
+			height[node] = rightDepth + 1
+		}
+
+		if leftDepth+rightDepth > diameter {
+			diameter = leftDepth + rightDepth
+		}
+	}
+
+	return diameter
+}
+
+func main() {
+	root := &TreeNode{
+		Val: 1,
+		Left: &TreeNode{
+			Val: 2,
+			Left: &TreeNode{
+				Val: 4,
+			},
+			Right: &TreeNode{
+				Val: 5,
+			},
+		},
+		Right: &TreeNode{
+			Val: 3,
+		},
+	}
+
+	fmt.Println(diameterOfBinaryTree(root)) // Output: 3
+}
+Complexity
+Time: O(N) — each node is pushed and popped once
+Space: O(N) — height map plus the explicit traversal stack
+
+
+
+
+Recursive: 
+package main
+
+import "fmt"
+
+type TreeNode struct {
+	val   int
+	left  *TreeNode
+	right *TreeNode
+}
+
+func diameter(node *TreeNode) int {
+
+	d := 0
+	var height func(node *TreeNode) int
+
+	height = func(node *TreeNode) int {
+
+		if node == nil {
+			return 0
+		}
+
+		left := height(node.left)
+		right := height(node.right)
+
+		if left+right > d {
+			d = left + right
+		}
+
+		if left > right {
+			return left + 1
+		}
+		return right + 1
+	}
+	height(node)
+	return d
+}
+
+func main() {
+
+	root := &TreeNode{1,
+		&TreeNode{2, &TreeNode{4, nil, nil}, &TreeNode{5, nil, nil}},
+		&TreeNode{3, nil, nil},
+	}
+	//_ = root
+	dia := diameter(root)
+	fmt.Println(dia)
+	return
+}
+Time: O(N)
+Space: O(H) (recursion stack)
