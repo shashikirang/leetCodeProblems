@@ -1,0 +1,31 @@
+package main
+
+import "fmt"
+
+type TreeNode struct {
+	val   int
+	left  *TreeNode
+	right *TreeNode
+}
+
+func main() {
+
+	root := &TreeNode{1, &TreeNode{2, &TreeNode{4, nil, nil}, nil}, &TreeNode{3, nil, nil}}
+
+	var getHeight func(node *TreeNode) int
+	getHeight = func(node *TreeNode) int {
+
+		if node == nil {
+			return 0
+		}
+
+		lefttree := getHeight(node.left)
+		righttree := getHeight(node.right)
+
+		return max(lefttree, righttree) + 1
+	}
+
+	h := getHeight(root)
+	fmt.Println("Height of the tree: ", h)
+	return
+}
