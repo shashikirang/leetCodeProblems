@@ -1,0 +1,60 @@
+/**
+ * Definition for a binary tree node.
+ * type TreeNode struct {
+ *     Val int
+ *     Left *TreeNode
+ *     Right *TreeNode
+ * }
+ */
+
+func flatten(root *TreeNode) {
+    var prev *TreeNode
+
+    var dfs func(*TreeNode)
+    dfs = func(node *TreeNode) {
+        if node == nil {
+            return
+        }
+
+        dfs(node.Right)
+        dfs(node.Left)
+
+        node.Right = prev
+        node.Left = nil
+        prev = node
+    }
+
+    dfs(root)
+}
+
+Complexity
+Time: O(n)
+Space: O(h), where h is the height of the tree (recursion stack)
+
+
+Iterative approach - Morris Traversal
+func flatten(root *TreeNode) {
+    curr := root
+
+    for curr != nil {
+        if curr.Left != nil {
+            // Find the rightmost node of left subtree
+            prev := curr.Left
+            for prev.Right != nil {
+                prev = prev.Right
+            }
+
+            // Connect right subtree
+            prev.Right = curr.Right
+
+            // Move left subtree to right
+            curr.Right = curr.Left
+            curr.Left = nil
+        }
+
+        curr = curr.Right
+    }
+}
+Complexity
+Time: O(n)
+Space: O(1)
